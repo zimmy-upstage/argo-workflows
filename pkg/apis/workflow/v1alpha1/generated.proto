@@ -79,6 +79,16 @@ message Artifact {
 
   // FromExpression, if defined, is evaluated to specify the value for the artifact
   optional string fromExpression = 11;
+
+  // ArtifactGC describes the strategy to use when to deleting an artifact from completed or deleted workflows
+  optional ArtifactGC artifactGC = 12;
+}
+
+// ArtifactGC describes how to delete artifacts from completed Workflows
+message ArtifactGC {
+  // Strategy is the strategy to use. One of "OnWorkflowCompletion", "OnWorkflowDeletion"
+  // +kubebuilder:validation:Enum="";OnWorkflowCompletion;OnWorkflowDeletion
+  optional string strategy = 1;
 }
 
 // ArtifactLocation describes a location for a single or multiple artifacts.
@@ -164,6 +174,22 @@ message ArtifactRepositoryRefStatus {
   optional ArtifactRepository artifactRepository = 4;
 }
 
+message ArtifactSearchQuery {
+  map<string, bool> artifactGCStrategies = 1;
+
+  optional string artifactName = 2;
+
+  optional string templateName = 3;
+
+  optional string nodeId = 4;
+}
+
+message ArtifactSearchResult {
+  optional Artifact artifact = 1;
+
+  optional string nodeID = 2;
+}
+
 // ArtifactoryArtifact is the location of an artifactory artifact
 message ArtifactoryArtifact {
   // URL of the artifact
@@ -199,6 +225,15 @@ message Backoff {
 
   // MaxDuration is the maximum amount of time allowed for the backoff strategy
   optional string maxDuration = 3;
+}
+
+// BasicAuth describes the secret selectors required for basic authentication
+message BasicAuth {
+  // UsernameSecret is the secret selector to the repository username
+  optional k8s.io.api.core.v1.SecretKeySelector usernameSecret = 1;
+
+  // PasswordSecret is the secret selector to the repository password
+  optional k8s.io.api.core.v1.SecretKeySelector passwordSecret = 2;
 }
 
 // Cache is the configuration for the type of cache to be used
@@ -508,6 +543,12 @@ message GitArtifact {
 
   // DisableSubmodules disables submodules during git clone
   optional bool disableSubmodules = 9;
+
+  // SingleBranch enables single branch clone, using the `branch` parameter
+  optional bool singleBranch = 10;
+
+  // Branch is the branch to fetch when `SingleBranch` is enabled
+  optional string branch = 11;
 }
 
 // HDFSArtifact is the location of an HDFS artifact
@@ -594,13 +635,16 @@ message HTTP {
   optional bool insecureSkipVerify = 7;
 }
 
-// HTTPArtifact allows an file served on HTTP to be placed as an input artifact in a container
+// HTTPArtifact allows a file served on HTTP to be placed as an input artifact in a container
 message HTTPArtifact {
   // URL of the artifact
   optional string url = 1;
 
   // Headers are an optional list of headers to send with HTTP requests for artifacts
   repeated Header headers = 2;
+
+  // BasicAuth is the secret selector for basic authentication
+  optional BasicAuth basicAuth = 3;
 }
 
 message HTTPHeader {
@@ -1774,6 +1818,9 @@ message WorkflowSpec {
 
   // WorkflowMetadata contains some metadata of the workflow to be refer
   optional WorkflowMetadata workflowMetadata = 42;
+
+  // ArtifactGC describes the strategy to use when to deleting artifacts from completed or deleted workflows
+  optional ArtifactGC artifactGC = 43;
 }
 
 // WorkflowStatus contains overall status information about a workflow

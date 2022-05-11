@@ -34,6 +34,7 @@ import (
 	armocks "github.com/argoproj/argo-workflows/v3/workflow/artifactrepositories/mocks"
 	"github.com/argoproj/argo-workflows/v3/workflow/common"
 	controllercache "github.com/argoproj/argo-workflows/v3/workflow/controller/cache"
+	"github.com/argoproj/argo-workflows/v3/workflow/controller/entrypoint"
 	"github.com/argoproj/argo-workflows/v3/workflow/controller/estimation"
 	"github.com/argoproj/argo-workflows/v3/workflow/events"
 	hydratorfake "github.com/argoproj/argo-workflows/v3/workflow/hydrator/fake"
@@ -175,12 +176,12 @@ func newController(options ...interface{}) (context.CancelFunc, *WorkflowControl
 		Config: config.Config{
 			Images: map[string]config.Image{
 				"my-image": {
-					Command: []string{"my-cmd"},
-					Args:    []string{"my-args"},
+					Entrypoint: []string{"my-entrypoint"},
+					Cmd:        []string{"my-cmd"},
 				},
-				"argoproj/argosay:v2":    {Command: []string{""}},
-				"docker/whalesay:latest": {Command: []string{""}},
-				"busybox":                {Command: []string{""}},
+				"argoproj/argosay:v2":    {Cmd: []string{""}},
+				"docker/whalesay:latest": {Cmd: []string{""}},
+				"busybox":                {Cmd: []string{""}},
 			},
 		},
 		artifactRepositories: armocks.DummyArtifactRepositories(&wfv1.ArtifactRepository{
@@ -213,6 +214,7 @@ func newController(options ...interface{}) (context.CancelFunc, *WorkflowControl
 	// always compare to NewWorkflowController to see what this block of code should be doing
 	{
 		wfc.metrics = metrics.New(metrics.ServerConfig{}, metrics.ServerConfig{})
+		wfc.entrypoint = entrypoint.New(kube, wfc.Config.Images)
 		wfc.wfQueue = workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
 		wfc.throttler = wfc.newThrottler()
 		wfc.podCleanupQueue = workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
@@ -817,7 +819,8 @@ spec:
 	makePodsPhase(ctx, woc, apiv1.PodSucceeded)
 
 	woc.operate(ctx)
-	controller.processNextPodCleanupItem(ctx)
+	assert.True(t, controller.processNextPodCleanupItem(ctx))
+	assert.True(t, controller.processNextPodCleanupItem(ctx))
 	assert.Equal(t, wfv1.WorkflowSucceeded, woc.wf.Status.Phase)
 	podCleanupKey := newPodCleanupKey(common.PrimaryCluster(), "test", "my-wf", labelPodCompleted)
 	assert.Equal(t, 0, controller.podCleanupQueue.NumRequeues(podCleanupKey))

@@ -7,7 +7,6 @@ import {Artifact, getTemplateByName, NodeStatus, Workflow} from '../../../../mod
 import {ANNOTATION_KEY_POD_NAME_VERSION} from '../../../shared/annotations';
 import {Button} from '../../../shared/components/button';
 import {ClipboardText} from '../../../shared/components/clipboard-text';
-import {DropDownButton} from '../../../shared/components/drop-down-button';
 import {DurationPanel} from '../../../shared/components/duration-panel';
 import {InlineTable} from '../../../shared/components/inline-table/inline-table';
 import {Links} from '../../../shared/components/links';
@@ -183,16 +182,15 @@ const WorkflowNodeSummary = (props: Props) => {
                         RESUME
                     </Button>
                 )}{' '}
-                {props.node.type !== 'Container' && props.onShowYaml && <Button onClick={() => props.onShowYaml(props.node.id)}>MANIFEST</Button>}{' '}
+                {props.node.type !== 'Container' && props.onShowYaml && (
+                    <Button icon='file-code' onClick={() => props.onShowYaml(props.node.id)}>
+                        MANIFEST
+                    </Button>
+                )}{' '}
                 {props.node.type === 'Pod' && props.onShowContainerLogs && (
-                    <DropDownButton
-                        onClick={() => showLogs()}
-                        items={[
-                            {onClick: () => showLogs('init'), value: 'init logs'},
-                            {onClick: () => showLogs('wait'), value: 'wait logs'}
-                        ]}>
-                        <i className='fa fa-bars' /> main logs
-                    </DropDownButton>
+                    <Button onClick={() => showLogs()} icon='bars'>
+                        LOGS
+                    </Button>
                 )}{' '}
                 {props.node.type === 'Pod' && props.onShowEvents && (
                     <Button icon='bell' onClick={() => props.onShowEvents()}>
@@ -436,7 +434,7 @@ const WorkflowNodeArtifacts = (props: {workflow: Workflow; node: NodeStatus; arc
                     <div className='columns small-1'>
                         <a href={artifact.downloadUrl}>
                             {' '}
-                            <i className='icon argo-icon-artifact' />
+                            <i className='fa fa-download' />
                         </a>
                     </div>
                     <div className='columns small-11'>

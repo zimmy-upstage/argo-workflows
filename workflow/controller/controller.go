@@ -17,6 +17,7 @@ import (
 	"golang.org/x/time/rate"
 	apiv1 "k8s.io/api/core/v1"
 	apierr "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/labels"
@@ -54,6 +55,7 @@ import (
 	"github.com/argoproj/argo-workflows/v3/workflow/artifactrepositories"
 	"github.com/argoproj/argo-workflows/v3/workflow/common"
 	controllercache "github.com/argoproj/argo-workflows/v3/workflow/controller/cache"
+	"github.com/argoproj/argo-workflows/v3/workflow/controller/entrypoint"
 	"github.com/argoproj/argo-workflows/v3/workflow/controller/estimation"
 	"github.com/argoproj/argo-workflows/v3/workflow/controller/indexes"
 	"github.com/argoproj/argo-workflows/v3/workflow/controller/informer"
@@ -80,6 +82,8 @@ type WorkflowController struct {
 	Config config.Config
 	// get the artifact repository
 	artifactRepositories artifactrepositories.Interface
+	// get images
+	entrypoint entrypoint.Interface
 
 	// cliExecutorImage is the executor image as specified from the command line
 	cliExecutorImage string
@@ -190,6 +194,7 @@ func NewWorkflowController(
 	}
 
 	wfc.metrics = metrics.New(wfc.getMetricsServerConfig())
+	wfc.entrypoint = entrypoint.New(kubernetesClient, wfc.Config.Images)
 
 	workqueue.SetProvider(wfc.metrics) // must execute SetProvider before we created the queues
 	wfc.wfQueue = wfc.metrics.RateLimiterWithBusyWorkers(&fixedItemIntervalRateLimiter{}, "workflow_queue")
@@ -482,28 +487,6 @@ func (wfc *WorkflowController) processNextPodCleanupItem(ctx context.Context) bo
 		}
 		pods := profile.kubernetesClient.CoreV1().Pods(namespace)
 		switch action {
-		case shutdownPod:
-			// to shutdown a pod, we signal the wait container to terminate, the wait container in turn will
-			// kill the main container (using whatever mechanism the executor uses), and will then exit itself
-			// once the main container exited
-			pod, err := wfc.getPod(cluster, namespace, podName)
-			if pod == nil || err != nil {
-				return err
-			}
-			for _, c := range pod.Spec.Containers {
-				if c.Name == common.WaitContainerName {
-					profile, err := wfc.profile(cluster)
-					if err != nil {
-						return err
-					}
-					if err := signal.SignalContainer(profile.restConfig, pod, common.WaitContainerName, syscall.SIGTERM); err != nil {
-						return err
-					}
-					return nil // done
-				}
-			}
-			// no wait container found
-			fallthrough
 		case terminateContainers:
 			if terminationGracePeriod, err := wfc.signalContainers(cluster, namespace, podName, syscall.SIGTERM); err != nil {
 				return err
@@ -572,14 +555,14 @@ func (wfc *WorkflowController) signalContainers(cluster, namespace, podName stri
 	}
 
 	for _, c := range pod.Status.ContainerStatuses {
-		if c.Name == common.WaitContainerName || c.State.Terminated != nil {
+		if c.State.Terminated != nil {
 			continue
 		}
 		profile, err := wfc.profile(cluster)
 		if err != nil {
 			return 0, err
 		}
-		if err := signal.SignalContainer(profile.restConfig, pod, c.Name, sig); err != nil {
+		if err := signal.SignalContainer(profile.restConfig, pod, c.Name, sig); errorsutil.IgnoreContainerNotFoundErr(err) != nil {
 			return 0, err
 		}
 	}
@@ -1102,7 +1085,10 @@ func (wfc *WorkflowController) newConfigMapInformer() cache.SharedIndexInformer 
 	if wfc.executorPlugins != nil {
 		indexInformer.AddEventHandler(cache.FilteringResourceEventHandler{
 			FilterFunc: func(obj interface{}) bool {
-				cm := obj.(metav1.Object)
+				cm, err := meta.Accessor(obj)
+				if err != nil {
+					return false
+				}
 				return cm.GetLabels()[common.LabelKeyConfigMapType] == common.LabelValueTypeConfigMapExecutorPlugin
 			},
 			Handler: cache.ResourceEventHandlerFuncs{

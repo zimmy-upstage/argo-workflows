@@ -89,6 +89,7 @@ export class ArchivedWorkflowDetails extends BasePage<RouteComponentProps<any>, 
                 )
             )
             .catch(error => this.setState({error}));
+        services.info.collectEvent('openedArchivedWorkflowDetails').then();
     }
 
     public render() {

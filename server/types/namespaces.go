@@ -10,3 +10,9 @@ func Namespace(req interface{}) string {
 	}
 	return ""
 }
+
+type NamespaceHolder string
+
+func (n NamespaceHolder) GetNamespace() string {
+	return string(n)
+}

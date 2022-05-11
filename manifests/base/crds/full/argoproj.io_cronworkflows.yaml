@@ -427,6 +427,15 @@ spec:
                               type: object
                             archiveLogs:
                               type: boolean
+                            artifactGC:
+                              properties:
+                                strategy:
+                                  enum:
+                                  - ""
+                                  - OnWorkflowCompletion
+                                  - OnWorkflowDeletion
+                                  type: string
+                              type: object
                             artifactory:
                               properties:
                                 passwordSecret:
@@ -482,6 +491,8 @@ spec:
                               type: object
                             git:
                               properties:
+                                branch:
+                                  type: string
                                 depth:
                                   format: int64
                                   type: integer
@@ -508,6 +519,8 @@ spec:
                                   type: string
                                 revision:
                                   type: string
+                                singleBranch:
+                                  type: boolean
                                 sshPrivateKeySecret:
                                   properties:
                                     key:
@@ -603,8 +616,30 @@ spec:
                                     - value
                                     type: object
                                   type: array
+                                passwordSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
                                 url:
                                   type: string
+                                usernameSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
                               required:
                               - url
                               type: object
@@ -794,6 +829,15 @@ spec:
                           type: object
                         type: array
                     type: object
+                  artifactGC:
+                    properties:
+                      strategy:
+                        enum:
+                        - ""
+                        - OnWorkflowCompletion
+                        - OnWorkflowDeletion
+                        type: string
+                    type: object
                   artifactRepositoryRef:
                     properties:
                       configMap:
@@ -855,6 +899,15 @@ spec:
                                     type: object
                                   archiveLogs:
                                     type: boolean
+                                  artifactGC:
+                                    properties:
+                                      strategy:
+                                        enum:
+                                        - ""
+                                        - OnWorkflowCompletion
+                                        - OnWorkflowDeletion
+                                        type: string
+                                    type: object
                                   artifactory:
                                     properties:
                                       passwordSecret:
@@ -910,6 +963,8 @@ spec:
                                     type: object
                                   git:
                                     properties:
+                                      branch:
+                                        type: string
                                       depth:
                                         format: int64
                                         type: integer
@@ -936,6 +991,8 @@ spec:
                                         type: string
                                       revision:
                                         type: string
+                                      singleBranch:
+                                        type: boolean
                                       sshPrivateKeySecret:
                                         properties:
                                           key:
@@ -1031,8 +1088,30 @@ spec:
                                           - value
                                           type: object
                                         type: array
+                                      passwordSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                       url:
                                         type: string
+                                      usernameSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                     required:
                                     - url
                                     type: object
@@ -1952,6 +2031,8 @@ spec:
                             type: object
                           git:
                             properties:
+                              branch:
+                                type: string
                               depth:
                                 format: int64
                                 type: integer
@@ -1978,6 +2059,8 @@ spec:
                                 type: string
                               revision:
                                 type: string
+                              singleBranch:
+                                type: boolean
                               sshPrivateKeySecret:
                                 properties:
                                   key:
@@ -2071,8 +2154,30 @@ spec:
                                   - value
                                   type: object
                                 type: array
+                              passwordSecret:
+                                properties:
+                                  key:
+                                    type: string
+                                  name:
+                                    type: string
+                                  optional:
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
                               url:
                                 type: string
+                              usernameSecret:
+                                properties:
+                                  key:
+                                    type: string
+                                  name:
+                                    type: string
+                                  optional:
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
                             required:
                             - url
                             type: object
@@ -3442,6 +3547,15 @@ spec:
                                             type: object
                                           archiveLogs:
                                             type: boolean
+                                          artifactGC:
+                                            properties:
+                                              strategy:
+                                                enum:
+                                                - ""
+                                                - OnWorkflowCompletion
+                                                - OnWorkflowDeletion
+                                                type: string
+                                            type: object
                                           artifactory:
                                             properties:
                                               passwordSecret:
@@ -3497,6 +3611,8 @@ spec:
                                             type: object
                                           git:
                                             properties:
+                                              branch:
+                                                type: string
                                               depth:
                                                 format: int64
                                                 type: integer
@@ -3523,6 +3639,8 @@ spec:
                                                 type: string
                                               revision:
                                                 type: string
+                                              singleBranch:
+                                                type: boolean
                                               sshPrivateKeySecret:
                                                 properties:
                                                   key:
@@ -3618,8 +3736,30 @@ spec:
                                                   - value
                                                   type: object
                                                 type: array
+                                              passwordSecret:
+                                                properties:
+                                                  key:
+                                                    type: string
+                                                  name:
+                                                    type: string
+                                                  optional:
+                                                    type: boolean
+                                                required:
+                                                - key
+                                                type: object
                                               url:
                                                 type: string
+                                              usernameSecret:
+                                                properties:
+                                                  key:
+                                                    type: string
+                                                  name:
+                                                    type: string
+                                                  optional:
+                                                    type: boolean
+                                                required:
+                                                - key
+                                                type: object
                                             required:
                                             - url
                                             type: object
@@ -3845,6 +3985,15 @@ spec:
                                                   type: object
                                                 archiveLogs:
                                                   type: boolean
+                                                artifactGC:
+                                                  properties:
+                                                    strategy:
+                                                      enum:
+                                                      - ""
+                                                      - OnWorkflowCompletion
+                                                      - OnWorkflowDeletion
+                                                      type: string
+                                                  type: object
                                                 artifactory:
                                                   properties:
                                                     passwordSecret:
@@ -3900,6 +4049,8 @@ spec:
                                                   type: object
                                                 git:
                                                   properties:
+                                                    branch:
+                                                      type: string
                                                     depth:
                                                       format: int64
                                                       type: integer
@@ -3926,6 +4077,8 @@ spec:
                                                       type: string
                                                     revision:
                                                       type: string
+                                                    singleBranch:
+                                                      type: boolean
                                                     sshPrivateKeySecret:
                                                       properties:
                                                         key:
@@ -4021,8 +4174,30 @@ spec:
                                                         - value
                                                         type: object
                                                       type: array
+                                                    passwordSecret:
+                                                      properties:
+                                                        key:
+                                                          type: string
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                          type: boolean
+                                                      required:
+                                                      - key
+                                                      type: object
                                                     url:
                                                       type: string
+                                                    usernameSecret:
+                                                      properties:
+                                                        key:
+                                                          type: string
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                          type: boolean
+                                                      required:
+                                                      - key
+                                                      type: object
                                                   required:
                                                   - url
                                                   type: object
@@ -4301,6 +4476,15 @@ spec:
                                     type: object
                                   archiveLogs:
                                     type: boolean
+                                  artifactGC:
+                                    properties:
+                                      strategy:
+                                        enum:
+                                        - ""
+                                        - OnWorkflowCompletion
+                                        - OnWorkflowDeletion
+                                        type: string
+                                    type: object
                                   artifactory:
                                     properties:
                                       passwordSecret:
@@ -4356,6 +4540,8 @@ spec:
                                     type: object
                                   git:
                                     properties:
+                                      branch:
+                                        type: string
                                       depth:
                                         format: int64
                                         type: integer
@@ -4382,6 +4568,8 @@ spec:
                                         type: string
                                       revision:
                                         type: string
+                                      singleBranch:
+                                        type: boolean
                                       sshPrivateKeySecret:
                                         properties:
                                           key:
@@ -4477,8 +4665,30 @@ spec:
                                           - value
                                           type: object
                                         type: array
+                                      passwordSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                       url:
                                         type: string
+                                      usernameSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                     required:
                                     - url
                                     type: object
@@ -5299,6 +5509,15 @@ spec:
                                   type: object
                                 archiveLogs:
                                   type: boolean
+                                artifactGC:
+                                  properties:
+                                    strategy:
+                                      enum:
+                                      - ""
+                                      - OnWorkflowCompletion
+                                      - OnWorkflowDeletion
+                                      type: string
+                                  type: object
                                 artifactory:
                                   properties:
                                     passwordSecret:
@@ -5354,6 +5573,8 @@ spec:
                                   type: object
                                 git:
                                   properties:
+                                    branch:
+                                      type: string
                                     depth:
                                       format: int64
                                       type: integer
@@ -5380,6 +5601,8 @@ spec:
                                       type: string
                                     revision:
                                       type: string
+                                    singleBranch:
+                                      type: boolean
                                     sshPrivateKeySecret:
                                       properties:
                                         key:
@@ -5475,8 +5698,30 @@ spec:
                                         - value
                                         type: object
                                       type: array
+                                    passwordSecret:
+                                      properties:
+                                        key:
+                                          type: string
+                                        name:
+                                          type: string
+                                        optional:
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
                                     url:
                                       type: string
+                                    usernameSecret:
+                                      properties:
+                                        key:
+                                          type: string
+                                        name:
+                                          type: string
+                                        optional:
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
                                   required:
                                   - url
                                   type: object
@@ -5792,6 +6037,15 @@ spec:
                                   type: object
                                 archiveLogs:
                                   type: boolean
+                                artifactGC:
+                                  properties:
+                                    strategy:
+                                      enum:
+                                      - ""
+                                      - OnWorkflowCompletion
+                                      - OnWorkflowDeletion
+                                      type: string
+                                  type: object
                                 artifactory:
                                   properties:
                                     passwordSecret:
@@ -5847,6 +6101,8 @@ spec:
                                   type: object
                                 git:
                                   properties:
+                                    branch:
+                                      type: string
                                     depth:
                                       format: int64
                                       type: integer
@@ -5873,6 +6129,8 @@ spec:
                                       type: string
                                     revision:
                                       type: string
+                                    singleBranch:
+                                      type: boolean
                                     sshPrivateKeySecret:
                                       properties:
                                         key:
@@ -5968,8 +6226,30 @@ spec:
                                         - value
                                         type: object
                                       type: array
+                                    passwordSecret:
+                                      properties:
+                                        key:
+                                          type: string
+                                        name:
+                                          type: string
+                                        optional:
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
                                     url:
                                       type: string
+                                    usernameSecret:
+                                      properties:
+                                        key:
+                                          type: string
+                                        name:
+                                          type: string
+                                        optional:
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
                                   required:
                                   - url
                                   type: object
@@ -8617,6 +8897,8 @@ spec:
                               type: object
                             git:
                               properties:
+                                branch:
+                                  type: string
                                 depth:
                                   format: int64
                                   type: integer
@@ -8643,6 +8925,8 @@ spec:
                                   type: string
                                 revision:
                                   type: string
+                                singleBranch:
+                                  type: boolean
                                 sshPrivateKeySecret:
                                   properties:
                                     key:
@@ -8736,8 +9020,30 @@ spec:
                                     - value
                                     type: object
                                   type: array
+                                passwordSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
                                 url:
                                   type: string
+                                usernameSecret:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                    optional:
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
                               required:
                               - url
                               type: object
@@ -10107,6 +10413,15 @@ spec:
                                               type: object
                                             archiveLogs:
                                               type: boolean
+                                            artifactGC:
+                                              properties:
+                                                strategy:
+                                                  enum:
+                                                  - ""
+                                                  - OnWorkflowCompletion
+                                                  - OnWorkflowDeletion
+                                                  type: string
+                                              type: object
                                             artifactory:
                                               properties:
                                                 passwordSecret:
@@ -10162,6 +10477,8 @@ spec:
                                               type: object
                                             git:
                                               properties:
+                                                branch:
+                                                  type: string
                                                 depth:
                                                   format: int64
                                                   type: integer
@@ -10188,6 +10505,8 @@ spec:
                                                   type: string
                                                 revision:
                                                   type: string
+                                                singleBranch:
+                                                  type: boolean
                                                 sshPrivateKeySecret:
                                                   properties:
                                                     key:
@@ -10283,8 +10602,30 @@ spec:
                                                     - value
                                                     type: object
                                                   type: array
+                                                passwordSecret:
+                                                  properties:
+                                                    key:
+                                                      type: string
+                                                    name:
+                                                      type: string
+                                                    optional:
+                                                      type: boolean
+                                                  required:
+                                                  - key
+                                                  type: object
                                                 url:
                                                   type: string
+                                                usernameSecret:
+                                                  properties:
+                                                    key:
+                                                      type: string
+                                                    name:
+                                                      type: string
+                                                    optional:
+                                                      type: boolean
+                                                  required:
+                                                  - key
+                                                  type: object
                                               required:
                                               - url
                                               type: object
@@ -10510,6 +10851,15 @@ spec:
                                                     type: object
                                                   archiveLogs:
                                                     type: boolean
+                                                  artifactGC:
+                                                    properties:
+                                                      strategy:
+                                                        enum:
+                                                        - ""
+                                                        - OnWorkflowCompletion
+                                                        - OnWorkflowDeletion
+                                                        type: string
+                                                    type: object
                                                   artifactory:
                                                     properties:
                                                       passwordSecret:
@@ -10565,6 +10915,8 @@ spec:
                                                     type: object
                                                   git:
                                                     properties:
+                                                      branch:
+                                                        type: string
                                                       depth:
                                                         format: int64
                                                         type: integer
@@ -10591,6 +10943,8 @@ spec:
                                                         type: string
                                                       revision:
                                                         type: string
+                                                      singleBranch:
+                                                        type: boolean
                                                       sshPrivateKeySecret:
                                                         properties:
                                                           key:
@@ -10686,8 +11040,30 @@ spec:
                                                           - value
                                                           type: object
                                                         type: array
+                                                      passwordSecret:
+                                                        properties:
+                                                          key:
+                                                            type: string
+                                                          name:
+                                                            type: string
+                                                          optional:
+                                                            type: boolean
+                                                        required:
+                                                        - key
+                                                        type: object
                                                       url:
                                                         type: string
+                                                      usernameSecret:
+                                                        properties:
+                                                          key:
+                                                            type: string
+                                                          name:
+                                                            type: string
+                                                          optional:
+                                                            type: boolean
+                                                        required:
+                                                        - key
+                                                        type: object
                                                     required:
                                                     - url
                                                     type: object
@@ -10966,6 +11342,15 @@ spec:
                                       type: object
                                     archiveLogs:
                                       type: boolean
+                                    artifactGC:
+                                      properties:
+                                        strategy:
+                                          enum:
+                                          - ""
+                                          - OnWorkflowCompletion
+                                          - OnWorkflowDeletion
+                                          type: string
+                                      type: object
                                     artifactory:
                                       properties:
                                         passwordSecret:
@@ -11021,6 +11406,8 @@ spec:
                                       type: object
                                     git:
                                       properties:
+                                        branch:
+                                          type: string
                                         depth:
                                           format: int64
                                           type: integer
@@ -11047,6 +11434,8 @@ spec:
                                           type: string
                                         revision:
                                           type: string
+                                        singleBranch:
+                                          type: boolean
                                         sshPrivateKeySecret:
                                           properties:
                                             key:
@@ -11142,8 +11531,30 @@ spec:
                                             - value
                                             type: object
                                           type: array
+                                        passwordSecret:
+                                          properties:
+                                            key:
+                                              type: string
+                                            name:
+                                              type: string
+                                            optional:
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
                                         url:
                                           type: string
+                                        usernameSecret:
+                                          properties:
+                                            key:
+                                              type: string
+                                            name:
+                                              type: string
+                                            optional:
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
                                       required:
                                       - url
                                       type: object
@@ -11964,6 +12375,15 @@ spec:
                                     type: object
                                   archiveLogs:
                                     type: boolean
+                                  artifactGC:
+                                    properties:
+                                      strategy:
+                                        enum:
+                                        - ""
+                                        - OnWorkflowCompletion
+                                        - OnWorkflowDeletion
+                                        type: string
+                                    type: object
                                   artifactory:
                                     properties:
                                       passwordSecret:
@@ -12019,6 +12439,8 @@ spec:
                                     type: object
                                   git:
                                     properties:
+                                      branch:
+                                        type: string
                                       depth:
                                         format: int64
                                         type: integer
@@ -12045,6 +12467,8 @@ spec:
                                         type: string
                                       revision:
                                         type: string
+                                      singleBranch:
+                                        type: boolean
                                       sshPrivateKeySecret:
                                         properties:
                                           key:
@@ -12140,8 +12564,30 @@ spec:
                                           - value
                                           type: object
                                         type: array
+                                      passwordSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                       url:
                                         type: string
+                                      usernameSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                     required:
                                     - url
                                     type: object
@@ -12457,6 +12903,15 @@ spec:
                                     type: object
                                   archiveLogs:
                                     type: boolean
+                                  artifactGC:
+                                    properties:
+                                      strategy:
+                                        enum:
+                                        - ""
+                                        - OnWorkflowCompletion
+                                        - OnWorkflowDeletion
+                                        type: string
+                                    type: object
                                   artifactory:
                                     properties:
                                       passwordSecret:
@@ -12512,6 +12967,8 @@ spec:
                                     type: object
                                   git:
                                     properties:
+                                      branch:
+                                        type: string
                                       depth:
                                         format: int64
                                         type: integer
@@ -12538,6 +12995,8 @@ spec:
                                         type: string
                                       revision:
                                         type: string
+                                      singleBranch:
+                                        type: boolean
                                       sshPrivateKeySecret:
                                         properties:
                                           key:
@@ -12633,8 +13092,30 @@ spec:
                                           - value
                                           type: object
                                         type: array
+                                      passwordSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                       url:
                                         type: string
+                                      usernameSecret:
+                                        properties:
+                                          key:
+                                            type: string
+                                          name:
+                                            type: string
+                                          optional:
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
                                     required:
                                     - url
                                     type: object
